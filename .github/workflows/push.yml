@@ -3,7 +3,6 @@ on: [push]
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: archetype
     steps:
       - uses: actions/checkout@v2
       - name: Set up Maven Central Repository
