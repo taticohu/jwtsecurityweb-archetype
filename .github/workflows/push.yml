@@ -22,5 +22,5 @@ jobs:
           cd target/generated-sources/archetype
           mvn --batch-mode deploy
         env:
-          MAVEN_USERNAME: ${{ secrets.RDC_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.RDC_TOKEN }}
+          MAVEN_USERNAME: ${{ env.RDC_USERNAME }}
+          MAVEN_PASSWORD: ${{ env.RDC_TOKEN }}
