@@ -1,0 +1,26 @@
+name: Publish package to the Maven Central Repository
+on: [push]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Maven Central Repository
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+          server-id: rdc-snapshots
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Publish package
+        run: |
+          cp .config/__LICENCE__ .
+          sed -i "`sed -n '/<\/properties>/=' pom.xml`r .config/setting.xml" pom.xml
+          mvn clean archetype:create-from-project
+          sed -i "`sed -n '/<name>.*<\/name>/=' target/generated-sources/archetype/pom.xml | head -1`r .config/setting.xml"  target/generated-sources/archetype/pom.xml
+          cd target/generated-sources/archetype
+          mvn --batch-mode deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.RDC_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.RDC_TOKEN }}
