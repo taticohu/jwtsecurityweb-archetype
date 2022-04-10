@@ -1,5 +1,8 @@
 name: Publish package to the Maven Central Repository
-on: [push]
+on:
+  push:
+    branches:
+      - master
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -15,11 +18,11 @@ jobs:
           server-password: MAVEN_PASSWORD
       - name: Publish package
         run: |
-          cp .config/__LICENCE__ .
           sed -i "`sed -n '/<\/properties>/=' pom.xml`r .config/setting.xml" pom.xml
           mvn clean archetype:create-from-project
           sed -i "`sed -n '/<name>.*<\/name>/=' target/generated-sources/archetype/pom.xml | head -1`r .config/setting.xml"  target/generated-sources/archetype/pom.xml
           cd target/generated-sources/archetype
+          cp .config/LICENCE target/generated-sources/archetype
           mvn --batch-mode deploy
         env:
           MAVEN_USERNAME: ${{ secrets.RDC_USERNAME }}
